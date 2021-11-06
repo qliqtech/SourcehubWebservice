@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 class LoginHelper
 {
 
-    public static function HashPassWord($password): string{
+    public static function HashPassWord($password): string {
 
         if($password == null){
 
@@ -18,6 +18,18 @@ class LoginHelper
         }
 
         return Hash::make($password);
+
+
+    }
+
+
+
+    public static function PasswordCheck($password1,$password2): bool {
+
+
+
+        return Hash::check($password1,$password2);
+
 
 
     }

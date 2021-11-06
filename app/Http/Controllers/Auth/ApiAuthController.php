@@ -18,6 +18,9 @@ class ApiAuthController extends Controller
 
     public function register (Request $request) {
 
+        $request->request->add($this->GetUserAgent($request));
+
+
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -39,12 +42,14 @@ class ApiAuthController extends Controller
 
 
         }
+        $allkeys = $request->all();
 
 
-       $service = new AuthenticationService();
+        $service = new AuthenticationService();
 
-       $response = $service->registeruser($request->all());
+       $response = $service->registeruser($allkeys);
 
+     //  dd($response);
 
        if($response[InAppResponsTypes::responsetypekey] == InAppResponsTypes::Success){
 
@@ -75,49 +80,75 @@ class ApiAuthController extends Controller
     }
 
 
-    public function registerold (Request $request) {
+
+
+
+    public function login (Request $request) {
+
+        $request->request->add($this->GetUserAgent($request));
+
+
+
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+
+            'email' => 'required|string|email',
             'password' => 'required|string|min:6',
         ]);
         if ($validator->fails())
         {
-            return response(['errors'=>$validator->errors()->all()], 422);
+
+            $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::SuccessCode,
+                ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>'Validation Errors',
+                'errors'=>$validator->errors()->all()
+
+
+            );
+
+
+            return response($responsevalues);
+
+
         }
-        $request['password']=Hash::make($request['password']);
-        $request['remember_token'] = Str::random(10);
-        $user = User::create($request->toArray());
-        $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-        $response = ['token' => $token];
-        return response($response, 200);
+        $allkeys = $request->all();
+
+
+        $service = new AuthenticationService();
+
+        $response = $service->login($allkeys);
+
+        //  dd($response);
+
+        if($response[InAppResponsTypes::responsetypekey] == InAppResponsTypes::Success){
+
+
+            $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::SuccessCode,
+                ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>'Login successfull',
+                'usertoken'=>$response[InAppResponsTypes::responsemessagekey]
+
+
+            );
+
+
+            return response($responsevalues);
+        }
+
+
+        $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::FailedCode,
+                                ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>$response[InAppResponsTypes::responsemessagekey],
+
+
+
+        );
+
+
+        return response($responsevalues);
+
+
     }
 
 
-    public function login (Request $request) {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-        if ($validator->fails())
-        {
-            return response(['errors'=>$validator->errors()->all()], 422);
-        }
-        $user = User::where('email', $request->email)->first();
-        if ($user) {
-            if (Hash::check($request->password, $user->password)) {
-                $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-                $response = ['token' => $token];
-                return response($response, 200);
-            } else {
-                $response = ["message" => "Password mismatch"];
-                return response($response, 422);
-            }
-        } else {
-            $response = ["message" =>'User does not exist'];
-            return response($response, 422);
-        }
-    }
+
+
 
     public function logout (Request $request) {
         $token = $request->user()->token();

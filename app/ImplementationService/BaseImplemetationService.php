@@ -10,8 +10,6 @@ class BaseImplemetationService
     public function responseHelper($response): array {
 
 
-    //    dd($response);
-
         if($response == null){
 
             return array([InAppResponsTypes::responsetypekey=>InAppResponsTypes::Error]);
@@ -22,9 +20,24 @@ class BaseImplemetationService
 
         }
 
+        $auditparams = $response["AuditItems"];
+
+
+        $this::LogAudit($auditparams);
 
         return array($response);
 
+
+
+    }
+
+    public function LogAudit($parameters){
+
+
+     //   dd($parameters);
+        $auditservice = new AuditService();
+
+        $auditservice->SaveAuditInDB($parameters);
 
 
     }

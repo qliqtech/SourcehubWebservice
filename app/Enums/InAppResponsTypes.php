@@ -16,9 +16,9 @@ abstract class InAppResponsTypes
 
     const Error = 3;
 
-    const responsetypekey = "responsetypekey";
+    const responsetypekey = "responsecode";
 
-    const responsemessagekey = "responsemessagekey";
+    const responsemessagekey = "responsemessage";
 
 
 }
