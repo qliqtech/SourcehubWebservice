@@ -44,7 +44,11 @@ class BaseDBOperations
 
     public function update($id,array $attributes){
 
+    //    dd($id);
+
         $record = $this->model->find($id);
+
+       // dd($record);
 
         $record->fill($attributes);
 

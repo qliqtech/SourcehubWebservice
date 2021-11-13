@@ -31,7 +31,8 @@ class User extends Authenticatable
         'IsActive',
         'DeletedBy',
         'DeactivatedOn',
-        'confirmationcode'
+        'confirmationcode',
+        'classid'
     ];
 
 

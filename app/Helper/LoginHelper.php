@@ -12,7 +12,7 @@ class LoginHelper
         if($password == null){
 
 
-            die('Password is empty');
+            die('Password field is empty');
             //return "";
 
         }

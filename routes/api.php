@@ -18,6 +18,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+
 Route::group(['middleware' => ['cors', 'json.response']], function () {
     // ...
 
@@ -26,5 +28,22 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::post('/register','Auth\ApiAuthController@register')->name('register.api');
     Route::post('/logout', 'Auth\ApiAuthController@logout')->name('logout.api');
 
+    Route::post('/createassignment','AssignmentController@createassignment')->middleware('auth:api');//->middleware('api.superAdmin');
+
+    Route::post('/markassignmentandcomment','AssignmentController@markassignmentandcomment')->middleware('auth:api');//->middleware('api.superAdmin');
+
+    Route::post('/submitassignment','AssignmentController@submitassignment')->middleware('auth:api');//->middleware('api.superAdmin');
+
+
+
     // ...
 });
+
+Route::get('/autherror', 'Auth\ApiAuthController@authenticationerror')->name('autherror');
+
+
+Route::group(['middleware' => ['auth:api', 'user_accessible']], function () {
+
+});
+
+

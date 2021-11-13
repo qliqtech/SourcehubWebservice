@@ -49,7 +49,7 @@ class AuthenticationService extends BaseImplemetationService
 
         $params['password'] = LoginHelper::HashPassWord($params['password']);  //Hash::make($params['password']);
 
-        $params['remember_token'] = Str::random(10);
+        $params['remember_token'] = GenerateRandomCharactersHelper::generaterandomAlphabets(10);
 
         $params['activityname'] = "User Signup";
 
@@ -59,7 +59,7 @@ class AuthenticationService extends BaseImplemetationService
         //Send ConfirmationEmail
 
         $user = $userdboperations->create($params);
-        $token = $user->createToken('creds')->accessToken;
+        $token = $user->createToken('Laravel Password Grant Client')->accessToken;
 
             $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Success,
                 InAppResponsTypes::responsemessagekey => $token
@@ -126,7 +126,10 @@ class AuthenticationService extends BaseImplemetationService
 
             try {
                 if (LoginHelper::PasswordCheck($params['password'], $userdetails->password)) {
-                    $token = $user->createToken('creds')->accessToken;
+
+                 //   dd();
+
+                    $token = $userdetails->createToken('Laravel Password Grant Client')->accessToken;
 
                     $successful = true;
 

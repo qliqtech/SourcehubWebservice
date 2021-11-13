@@ -157,4 +157,11 @@ class ApiAuthController extends Controller
         return response($response, 200);
     }
 
+
+    public function authenticationerror(){
+
+        $response = ['message' => 'Authentication Error'];
+        return response($response, 200);
+
+    }
 }

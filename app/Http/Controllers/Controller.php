@@ -19,15 +19,20 @@ class Controller extends BaseController
 
         $userid = null;
 
+        $useremail = null;
+
         if($request->user() != null){
 
             $userid = $request->user()->id;
+
+            $useremail = $request->email;
         }
 
 
         $useragent = ['userip'=>$request->ip(),
             'userid'=>$userid,
             'created_by'=>$userid,
+            'useremail'=>$useremail,
             'requesturl'=>$request->fullUrl(),
             'browser'=>$request->userAgent(),
             'requestbody'=>$request->getContent()];
