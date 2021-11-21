@@ -20,7 +20,7 @@ class GenerateRandomCharactersHelper
         return substr($result, -$len);
     }
 
-    public static function generaterandomnumbeer($len = 4){
+    public static function generaterandomnumbeer($len = 6){
         $charset = "123456789";
         $base = strlen($charset);
         $result = '';

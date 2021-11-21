@@ -8,10 +8,9 @@ use App\Http\Controllers\Controller;
 use App\ImplementationService\AuthenticationService;
 use Illuminate\Http\Request;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+
 
 class ApiAuthController extends Controller
 {
@@ -30,7 +29,7 @@ class ApiAuthController extends Controller
         if ($validator->fails())
         {
 
-            $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::SuccessCode,
+            $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::ValidationError,
                 ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>'Validation Errors',
                 'errors'=>$validator->errors()->all()
 

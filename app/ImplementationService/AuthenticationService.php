@@ -51,7 +51,12 @@ class AuthenticationService extends BaseImplemetationService
 
         $params['remember_token'] = GenerateRandomCharactersHelper::generaterandomAlphabets(10);
 
-        $params['activityname'] = "User Signup";
+      //  $params['confirmationcode'] = GenerateRandomCharactersHelper::generaterandomAlphabets(10);
+
+            $params['confirmationcode'] = GenerateRandomCharactersHelper::generaterandomnumbeer(6);
+
+
+            $params['activityname'] = "User Signup";
 
         $params['confirmationcode'] = GenerateRandomCharactersHelper::generaterandomAlphabets(15);
 
@@ -111,11 +116,11 @@ class AuthenticationService extends BaseImplemetationService
             return $this::responseHelper($responsearray)[0];
         }
 
-        $params =  array_add($params,'Isconfirmed',false);
+      //  $params =  array_add($params,'Isconfirmed',false);
 
-        $params =  array_add($params,'userroleid',UserRoles::Student);
+      //  $params =  array_add($params,'userroleid',UserRoles::Student);
 
-        $params =  array_add($params,'IsActive',false);
+    //    $params =  array_add($params,'IsActive',false);
 
 
         $userdetails =  $userdboperations->findUserByEmail($params['email']);
@@ -135,13 +140,28 @@ class AuthenticationService extends BaseImplemetationService
 
                  //   dd($user->IsActive);
 
-                    if($user->IsActive === false){
+                    if($userdetails->IsActive == false){
 
                         $params['responsemessage'] = "Account is inactive ".$params['email'];
 
 
                         $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Failed,
                             InAppResponsTypes::responsemessagekey => "Account Inactive"
+                        );
+
+                        $successful = false;
+
+                    }
+
+                    //    var_dump($userdetails->Isconfirmed);die();
+
+                    if($userdetails->Isconfirmed == false){
+
+                        $params['responsemessage'] = "Account is not confirmed.";
+
+
+                        $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Failed,
+                            InAppResponsTypes::responsemessagekey => "Account not confirmed"
                         );
 
                         $successful = false;
@@ -155,7 +175,6 @@ class AuthenticationService extends BaseImplemetationService
                         );
 
 
-                        $params['confirmationcode'] = GenerateRandomCharactersHelper::generaterandomAlphabets(15);
 
                         $params['userid'] = $userdetails->id;
 

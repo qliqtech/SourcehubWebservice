@@ -92,6 +92,7 @@
                                 <li><a data-scroll href="#forwho">For who?</a></li>
                                 <li><a data-scroll href="#onlineclass">Online Class</a></li>
                                 <li><a data-scroll href="#signup">Sign up</a></li>
+                                <li><a  href="" data-toggle="modal" data-target="#myModal">Login</a></li>
 
                             </ul>
 
@@ -452,7 +453,7 @@
                     <h4>Pay only if you want to continue</h4>
                     <div class="service-text">
 
-                        <p>The 4 months course is GHC600. You can start the course for free. Only pay on the 2nd month if you wish to continue</p>
+                        <p>The 4 months course is GHC800. You can start the course for free.</p>
                     </div>
                 </div>
             </div> <!-- /.col -->
@@ -503,7 +504,7 @@
                             <span class="error" >please enter name</span>
                         </div>
                         <div class="col-sm-6 contact-form-item wow zoomIn">
-                            <input name="email"  type="text"  placeholder="E-Mail: *"/>
+                            <input name="emailreg" id="emailreg" type="text"  placeholder="E-Mail: *"/>
                             <span class="error" >please enter e-mail</span>
                             <span class="error" >e-mail is not a valid format</span>
                         </div>
@@ -512,13 +513,20 @@
                             <span class="error" id="err-name">please enter name</span>
                         </div>
                         <div class="col-sm-6 contact-form-item wow zoomIn">
-                            <input name="name" id="password" type="password"   placeholder="Password: *"/>
+                            <input name="name" id="passwordreg" type="password"   placeholder="Password: *"/>
                             <span class="error" id="">please enter password</span>
+                        </div>
+                        <div id="regerrorlist" class="">
+
+
                         </div>
 
 
                         <div class="col-sm-12 contact-form-item">
-                            <button class="send_message btn btn-main btn-theme wow fadeInUp" id="send" data-lang="en">submit</button>
+
+                            <input type="button" id="submitreg" value="signup" class="send_message btn btn-main btn-theme wow fadeInUp">
+
+
                         </div>
 
                     </form>
@@ -584,7 +592,39 @@
     </div> <!-- /.container -->
 </section>
 <!-- End Contact -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Login</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+                        <small id="emailHelp" class="form-text text-muted"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password">
+                    </div>
+
+                    <input class="send_message btn btn-main btn-theme wow fadeInUp" type="button" value="Login" name="loginbtn" id="loginbtn" data-lang="en"/>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 <!-- Start Footer -->
 <footer class="site-footer">
@@ -726,6 +766,166 @@
         }
     }); /*ready*/
 </script>
+
+
+<script>
+
+    $("#loginbtn").click(function(){
+        var username = $("#email").val();
+        var password = $("#password").val();
+
+
+
+        $.ajax
+        ({
+            type: "POST",
+            url: "api/login?email="+username+"&password="+password,
+            //  dataType: 'json',
+            async: false,
+
+
+            //  data: '{"email": "' + username + '", "password" : "' + password + '"}',
+
+            success: function (response){
+                //    alert(response);
+
+                //     console.log(response.toString());
+
+
+                // console.log(JSON.stringify(response));
+
+                alert(response.responsemessage);
+
+                if(response.responsecode == "206"){
+
+                    window.location.replace("resetpassword");
+
+                    $.cookie('currentusercookie',response.token);
+
+
+                }
+
+
+                if(response.responsecode == "200"){
+
+                    window.location.replace("dashboard");
+
+                    $.cookie('currentusercookie',response.token);
+
+                    $.cookie('username',username);
+
+                    $.cookie('usertype',response.usertype);
+
+
+
+                    //   alert(response.responsecode);
+
+
+
+
+                }
+
+
+                //
+
+                //store token in cookie and redirect to dashboard if successful
+            }
+        });
+    });
+
+</script>
+
+
+
+
+
+<script>
+
+    $('#regerrorlist').hide();
+
+    $("#submitreg").click(function(){
+        var email = $("#emailreg").val();
+        var password = $("#passwordreg").val();
+        var name = $("#name").val();
+        var phone = $("#phone").val();
+
+        var myformData = new FormData();
+        myformData.append('email', email);
+        myformData.append('password', password);
+        myformData.append('name', name);
+        myformData.append('phone',phone);
+
+        $.ajax({
+            method: 'post',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: myformData,
+
+            url: 'api/register',
+            success: function (response) {
+
+
+                if(response.responsecode === 203){
+
+                //    alert()
+
+
+
+                    listerrors(response.errors)
+
+                }
+
+                if(response.responsecode === 200){
+
+                    //    alert()
+
+
+                        alert(response.responsemessage)
+
+
+                    //display modal to enter confirmation code
+
+                }
+
+
+
+
+            }
+        });
+
+
+    });
+
+
+    function listerrors(data) { //data is an array of objects as specified - parse json first
+
+        $('#regerrorlist').show();
+
+        var errorlist = $("#regerrorlist");
+
+
+
+        //  var
+
+        var rows = "";
+        $.each(data, function(index,val) {
+
+            var status = "--";
+
+
+
+
+            rows += "<tr><td>" + val +"</td>"+"<td>"
+        });
+        errorlist.prepend(rows);
+    }
+
+
+
+</script>
+
+
 
 </body>
 </html>
