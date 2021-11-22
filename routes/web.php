@@ -23,3 +23,8 @@ Route::get('/dashboard', function () {
 
 });
 
+Route::get('/streamshare', function () {
+    return view('streamshare');
+
+});
+

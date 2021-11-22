@@ -79,13 +79,9 @@ class ApiAuthController extends Controller
     }
 
 
-
-
-
     public function login (Request $request) {
 
         $request->request->add($this->GetUserAgent($request));
-
 
 
         $validator = Validator::make($request->all(), [
