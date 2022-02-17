@@ -16,6 +16,25 @@
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="plugins/images/favicon.png">
 
+
+
+    <script src="{{ asset('dashboardSite/plugins/bower_components/jquery/dist/jquery.min.js')}}"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="{{ asset('dashboardSite/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ asset('dashboardSite/js/app-style-switcher.js')}}"></script>
+    <script src="{{ asset('dashboardSite/plugins/bower_components/jquery-sparkline/jquery.sparkline.min.js')}}"></script>
+    <!--Wave Effects -->
+    <script src="{{ asset('dashboardSite/js/waves.js')}}"></script>
+    <!--Menu sidebar -->
+    <script src="{{ asset('dashboardSite/js/sidebarmenu.js')}}"></script>
+    <!--Custom JavaScript -->
+    <script src="{{ asset('dashboardSite/js/custom.js')}}"></script>
+    <!--This page JavaScript -->
+    <!--chartis chart-->
+    <script src="{{ asset('dashboardSite/plugins/bower_components/chartist/dist/chartist.min.js')}}"></script>
+    <script src="{{ asset('dashboardSite/plugins/bower_components/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js')}}"></script>
+    <script src="{{ asset('dashboardSite/js/pages/dashboards/dashboard1.js')}}"></script>
+
     <!-- Custom CSS -->
     <link href="{{ asset('dashboardSite/plugins/bower_components/chartist/dist/chartist.min.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('dashboardSite/plugins/bower_components/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.css')}}">
@@ -116,14 +135,15 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link waves-effect waves-dark sidebar-link" href=""
+
+                        <a class="sidebar-link waves-effect waves-dark sidebar-link"
                            aria-expanded="false">
                             <i class="fa fa-user" aria-hidden="true"></i>
                             <span class="hide-menu">Profile</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link waves-effect waves-dark sidebar-link" href="streamshare"
+                        <a  href="createstreams"   class="sidebar-link waves-effect waves-dark sidebar-link"
                            aria-expanded="false">
                             <i class="fa fa-video" aria-hidden="true"></i>
                             <span class="hide-menu">Share Stream app</span>
@@ -140,4 +160,41 @@
         </div>
         <!-- End Sidebar scroll-->
     </aside>
+
+
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create Stream</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Enter Stream name</label>
+                            <input type="streamname" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter stream name">
+                            <small id="emailHelp" class="form-text text-muted"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Password">
+                        </div>
+
+                        <input class="send_message btn btn-main btn-theme wow fadeInUp" type="button" value="Create Stream" name="createstream" id="createstream" data-lang="en"/>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
 

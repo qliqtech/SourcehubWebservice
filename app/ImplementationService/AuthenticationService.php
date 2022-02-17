@@ -4,9 +4,12 @@ namespace App\ImplementationService;
 
 
 
+use App\CacheOperations\CacheUserRegistrationOps;
 use App\DBOperations\UserDBOperations;
 use App\Enums\InAppResponsTypes;
 use App\Enums\UserRoles;
+use App\Helper\EmailHelper;
+use App\Helper\EmailMessages;
 use App\Helper\GenerateRandomCharactersHelper;
 use App\Helper\LoginHelper;
 use App\Models\User;
@@ -20,8 +23,6 @@ class AuthenticationService extends BaseImplemetationService
     public function registeruser($params) : array
     {
 
-
-
         $user = new User();
 
         $userdboperations = new UserDBOperations($user);
@@ -34,9 +35,6 @@ class AuthenticationService extends BaseImplemetationService
 
         $params =  array_add($params,'IsActive',false);
 
-
-
-
         try {
 
         if ($params == null) {
@@ -45,18 +43,13 @@ class AuthenticationService extends BaseImplemetationService
             return $this::responseHelper($responsearray)[0];
         }
 
-
-
         $params['password'] = LoginHelper::HashPassWord($params['password']);  //Hash::make($params['password']);
 
         $params['remember_token'] = GenerateRandomCharactersHelper::generaterandomAlphabets(10);
 
-      //  $params['confirmationcode'] = GenerateRandomCharactersHelper::generaterandomAlphabets(10);
+        $params['confirmationcode'] = GenerateRandomCharactersHelper::generaterandomnumbeer(6);
 
-            $params['confirmationcode'] = GenerateRandomCharactersHelper::generaterandomnumbeer(6);
-
-
-            $params['activityname'] = "User Signup";
+        $params['activityname'] = "User Signup";
 
         $params['confirmationcode'] = GenerateRandomCharactersHelper::generaterandomAlphabets(15);
 
@@ -69,8 +62,6 @@ class AuthenticationService extends BaseImplemetationService
             $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Success,
                 InAppResponsTypes::responsemessagekey => $token
             );
-         //   return $this::responseHelper($responsearray)[0];
-
 
 
         }catch (\Exception $ex){
@@ -84,7 +75,6 @@ class AuthenticationService extends BaseImplemetationService
 
             $params['responsemessage'] = $ex->getMessage();
 
-        //    return $this::responseHelper($responsearray)[0];
         }
 
         $responsearray = array_add($responsearray,'AuditItems',$params);
@@ -94,8 +84,6 @@ class AuthenticationService extends BaseImplemetationService
 
         return $this::responseHelper($responsearray)[0];
     }
-
-
 
 
 
@@ -138,36 +126,6 @@ class AuthenticationService extends BaseImplemetationService
 
                     $successful = true;
 
-                 //   dd($user->IsActive);
-
-                    if($userdetails->IsActive == false){
-
-                        $params['responsemessage'] = "Account is inactive ".$params['email'];
-
-
-                        $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Failed,
-                            InAppResponsTypes::responsemessagekey => "Account Inactive"
-                        );
-
-                        $successful = false;
-
-                    }
-
-                    //    var_dump($userdetails->Isconfirmed);die();
-
-                    if($userdetails->Isconfirmed == false){
-
-                        $params['responsemessage'] = "Account is not confirmed.";
-
-
-                        $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Failed,
-                            InAppResponsTypes::responsemessagekey => "Account not confirmed"
-                        );
-
-                        $successful = false;
-
-                    }
-
                     if($successful == true){
 
                         $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Success,
@@ -189,16 +147,10 @@ class AuthenticationService extends BaseImplemetationService
 
                     $params['activityname'] = "Login";
 
-
-
                     $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Failed,
                         InAppResponsTypes::responsemessagekey => "Wrong username or password"
                     );
                 }
-
-
-
-
 
             }catch (\Exception $ex){
 
@@ -234,6 +186,266 @@ class AuthenticationService extends BaseImplemetationService
 
         return $this::responseHelper($responsearray)[0];
     }
+
+
+
+
+    public function resetpassword($params) : array
+    {
+
+
+        $user = new User();
+
+        $userdboperations = new UserDBOperations($user);
+
+        $cacheUserRegistrationOps = new CacheUserRegistrationOps();
+
+        $responsearray = array();
+
+
+
+        try {
+
+            if ($params == null) {
+
+                return $this::responseHelper($responsearray)[0];
+            }
+
+            //    $valuesfromcache = json_decode($cacheUserRegistrationOps->getuserregistrationdetailsfromcache($params["confirmationcode"]),true);
+
+            $newpassword = LoginHelper::HashPassWord($params['password']);
+
+            $userdetails = $userdboperations->updateuseraccountpasswordfromconfirmationcode($params["confirmationcode"],$newpassword);
+
+
+
+
+            //   dd($valuesfromcache);
+
+
+
+
+            if($userdetails == null){
+
+                $this::StopProcessAndDisplayMessage("404","Confirmation code not found");
+
+            }
+
+            $params['userid'] = $userdetails->id;
+
+
+            $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+
+
+
+            $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Success,
+                InAppResponsTypes::responsemessagekey => $token
+            );
+
+            $params['activityname'] = "Password reset";
+
+            $params['responsemessage'] = "password reset successful";
+
+        }catch (\Exception $ex){
+
+
+            $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Error,
+                InAppResponsTypes::responsemessagekey => $ex->getMessage()
+            );
+
+            $params['activityname'] = "Password reset";
+
+            $params['responsemessage'] = $ex->getMessage();
+
+            //    return $this::responseHelper($responsearray)[0];
+        }
+
+        $responsearray = array_add($responsearray,'AuditItems',$params);
+
+
+        //    $cacheUserRegistrationOps->deleteconfirmationcode($params["confirmationcode"]);
+
+        return $this::responseHelper($responsearray)[0];
+    }
+
+
+
+
+    public function sendpasswordresetlink($params) : array
+    {
+
+
+        $user = new User();
+
+        $userdboperations = new UserDBOperations($user);
+
+
+        $responsearray = array();
+
+        if ($params == null) {
+
+            return $this::responseHelper($responsearray)[0];
+        }
+
+        $userdetails = $userdboperations->findUserByEmail($params["email"]);
+
+        if($userdetails->IsDeleted == true){
+
+            $this::StopProcessAndDisplayMessage("404","account is deleted");
+
+
+        }
+
+        if($userdetails->IsActive == false){
+
+
+            $this::StopProcessAndDisplayMessage("401","account is deactivated");
+
+        }
+
+        try {
+
+
+
+            //  $valuesfromcache = json_
+
+
+            $token = $userdetails->createToken('Laravel Password Grant Client')->accessToken;
+
+
+            $emailmessages = new EmailMessages();
+
+            $confirmationcode = GenerateRandomCharactersHelper::generaterandomAlphabets(16);
+
+
+
+            $emailmessagebody = $emailmessages->sendPasswordresetlink("", $confirmationcode);
+
+
+
+            $userdboperations->updateById($userdetails->id,array('confirmationcode'=>$confirmationcode,'requirespasswordreset'=>true));
+
+            //confirmationcode
+
+
+            EmailHelper::sendEmail($params["email"],"",$emailmessagebody,"Password reset");
+
+            $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Success,
+                InAppResponsTypes::responsemessagekey => $token
+            );
+
+        }catch (\Exception $ex){
+
+
+            $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Error,
+                InAppResponsTypes::responsemessagekey => $ex->getMessage()
+            );
+
+            $params['activityname'] = "Account Confirmation";
+
+            $params['responsemessage'] = $ex->getMessage();
+
+            //    return $this::responseHelper($responsearray)[0];
+        }
+
+        $responsearray = array_add($responsearray,'AuditItems',$params);
+
+
+
+        return $this::responseHelper($responsearray)[0];
+    }
+
+
+
+
+    public function confirmaccount($params) : array
+    {
+
+
+        $user = new User();
+
+        $userdboperations = new UserDBOperations($user);
+
+        $cacheUserRegistrationOps = new CacheUserRegistrationOps();
+
+        $responsearray = array();
+
+
+
+        try {
+
+            if ($params == null) {
+
+                return $this::responseHelper($responsearray)[0];
+            }
+
+            $valuesfromcache = json_decode($cacheUserRegistrationOps->getuserregistrationdetailsfromcache($params["confirmationcode"]),true);
+
+            if($valuesfromcache == null){
+
+                $this::StopProcessAndDisplayMessage("404","Invalid Confirmation code");
+            }
+
+            $valuesfromcache["Isconfirmed"] = true;
+
+            $valuesfromcache["ConfirmedOn"] = now();
+
+            $valuesfromcache["IsActive"] = true;
+
+
+            //   dd($valuesfromcache);
+
+            if($userdboperations->findUserByEmail($valuesfromcache["email"])!=null){
+
+
+                $this::StopProcessAndDisplayMessage("201","Account already confirmed");
+
+            }
+
+
+            $userdetails = $userdboperations->create($valuesfromcache);
+
+
+
+            if($userdetails == null){
+
+                $this::StopProcessAndDisplayMessage("404","Confirmation code not found");
+
+            }
+
+            $params['userid'] = $userdetails->id;
+
+
+            $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+
+
+
+            $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Success,
+                InAppResponsTypes::responsemessagekey => $token
+            );
+
+        }catch (\Exception $ex){
+
+
+            $responsearray = array(InAppResponsTypes::responsetypekey => InAppResponsTypes::Error,
+                InAppResponsTypes::responsemessagekey => $ex->getMessage()
+            );
+
+            $params['activityname'] = "Account Confirmation";
+
+            $params['responsemessage'] = $ex->getMessage();
+
+            //    return $this::responseHelper($responsearray)[0];
+        }
+
+        $responsearray = array_add($responsearray,'AuditItems',$params);
+
+
+        $cacheUserRegistrationOps->deleteconfirmationcode($params["confirmationcode"]);
+
+        return $this::responseHelper($responsearray)[0];
+    }
+
 
 
 

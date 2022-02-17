@@ -143,6 +143,215 @@ class ApiAuthController extends Controller
 
 
 
+    public function confirmaccount (Request $request) {
+
+        $request->request->add($this->GetUserAgent($request));
+
+        $i = 2;
+
+        $datafromrequest = $request->json()->all();
+
+
+
+        $validator = Validator::make($datafromrequest, [
+            'confirmationcode' => 'required|string',
+
+        ]);
+
+
+        if ($validator->fails())
+        {
+
+            $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::ValidationError,
+                ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>'Validation Errors',
+                'errors'=>$validator->errors()->all()
+
+
+            );
+
+
+            return response($responsevalues,400);
+
+
+        }
+
+
+
+        $service = new AuthenticationService();
+
+        $response = $service->confirmaccount($datafromrequest);
+
+
+
+        if($response[InAppResponsTypes::responsetypekey] == InAppResponsTypes::Success){
+
+
+            $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::SuccessCode,
+                'responsemessage'=>'Account confirmed successfully',
+                'usertoken'=>$response[InAppResponsTypes::responsemessagekey]
+
+
+            );
+
+
+            return response($responsevalues);
+        }
+
+
+        $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::FailedCode,
+            ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>'Error',
+
+
+
+        );
+
+
+        return response($responsevalues,500);
+
+
+    }
+
+
+
+    public function sendpasswordresetlink (Request $request) {
+
+        $request->request->add($this->GetUserAgent($request));
+
+
+        $validator = Validator::make($request->all(), [
+
+            'email' => 'required|string|email',
+
+        ]);
+        if ($validator->fails())
+        {
+
+            $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::SuccessCode,
+                ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>'Validation Errors',
+                'errors'=>$validator->errors()->all()
+
+
+            );
+
+
+            return response($responsevalues);
+
+
+        }
+        $allkeys = $request->all();
+
+
+        $service = new AuthenticationService();
+
+        $response = $service->sendpasswordresetlink($allkeys);
+
+        //  dd($response);
+
+        if($response[InAppResponsTypes::responsetypekey] == InAppResponsTypes::Success){
+
+
+            $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::SuccessCode,
+                ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>'Password reset link sent'
+
+
+
+            );
+
+
+            return response($responsevalues);
+        }
+
+
+        $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::FailedCode,
+            ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>$response[InAppResponsTypes::responsemessagekey],
+
+
+
+        );
+
+
+        return response($responsevalues);
+
+
+    }
+
+
+
+    public function resetpassword (Request $request) {
+
+        $request->request->add($this->GetUserAgent($request));
+
+
+
+        $datafromrequest = $request->json()->all();
+
+
+
+        $validator = Validator::make($datafromrequest, [
+            'password' => 'required|string|min:6',
+            'confirmationcode' => 'required|string',
+        ]);
+
+
+        if ($validator->fails())
+        {
+
+            $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::ValidationError,
+                ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>'Validation Errors',
+                'errors'=>$validator->errors()->all()
+
+
+            );
+
+
+            return response($responsevalues,400);
+
+
+        }
+
+        if($datafromrequest['password']!=$datafromrequest['confirmpassword']){
+
+
+            return response('Password and confirmed password not match',400);
+
+        }
+
+
+        $service = new AuthenticationService();
+
+        $response = $service->resetpassword($datafromrequest);
+
+
+
+        if($response[InAppResponsTypes::responsetypekey] == InAppResponsTypes::Success){
+
+
+            $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::SuccessCode,
+                'responsemessage'=>'Account password reset',
+                'usertoken'=>$response[InAppResponsTypes::responsemessagekey]
+
+
+            );
+
+
+            return response($responsevalues);
+        }
+
+
+        $responsevalues = array(ApiResponseCodesKeysAndMessages::ResponseCodeKey=>ApiResponseCodesKeysAndMessages::FailedCode,
+            ApiResponseCodesKeysAndMessages::ResponseMessageCodeKey=>'Error',
+
+
+
+        );
+
+
+        return response($responsevalues,500);
+
+
+    }
+
+
 
 
     public function logout (Request $request) {

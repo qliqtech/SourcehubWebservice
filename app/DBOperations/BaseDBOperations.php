@@ -42,6 +42,20 @@ class BaseDBOperations
         return $this->model->find($id);
     }
 
+    public function updateById($id, array $attributes){
+
+        //    dd($id);
+
+        $record = $this->model->find($id);
+
+        // dd($record);
+
+        $record->fill($attributes);
+
+        return $record->save();
+
+    }
+
     public function update($id,array $attributes){
 
     //    dd($id);

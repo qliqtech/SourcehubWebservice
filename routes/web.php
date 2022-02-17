@@ -28,3 +28,9 @@ Route::get('/streamshare', function () {
 
 });
 
+
+Route::get('/createstreams', function () {
+    return view('createstreams');
+
+});
+

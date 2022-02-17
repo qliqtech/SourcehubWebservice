@@ -42,4 +42,22 @@ class BaseImplemetationService
 
     }
 
+
+
+    public function StopProcessAndDisplayMessage($httpcode,$displaymessage){
+
+
+        //   dd($httpcode);
+
+        header("HTTP/1.1 ".$httpcode);
+
+        die($displaymessage);
+        //   dd($parameters);
+
+
+
+
+
+    }
+
 }

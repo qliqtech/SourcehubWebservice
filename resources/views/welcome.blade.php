@@ -91,9 +91,12 @@
                                 <li><a data-scroll href="#whatwedo">What we do</a></li>
                                 <li><a data-scroll href="#forwho">For who?</a></li>
                                 <li><a data-scroll href="#onlineclass">Online Class</a></li>
+                                 <!--
                                 <li><a data-scroll href="#signup">Sign up</a></li>
+                                -->
+                                <!--
                                 <li><a  href="" data-toggle="modal" data-target="#myModal">Login</a></li>
-
+                                   -->
                             </ul>
 
                         </div>
@@ -240,6 +243,7 @@
                     </div>
 
                     <!-- LAYER NR. 3 -->
+                 <!--
                     <div class="tp-caption rs-parallaxlevel-5"
                          id="slide-2-layer-3"
                          data-x="['left','left','left','left']" data-hoffset="['0','50','0','0']"
@@ -261,6 +265,7 @@
                          data-responsive="off"
                          style=""><a data-scroll href="#signup" class='btn btn-main btn-black'>Sign up</a>
                     </div>
+                    -->
 
                 </li>
 
@@ -374,8 +379,9 @@
 
                 </div>
 
+                <!--
                 <a data-scroll href="#signup" class="m-top-30 m-bottom-30 btn btn-main wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.8s">Sign up</a>
-
+                -->
 
             </div> <!-- /.col -->
 
@@ -450,10 +456,10 @@
                     <div class="service-icon">
                         <i class="fa fa-money" aria-hidden="true"></i>
                     </div>
-                    <h4>Pay only if you want to continue</h4>
+                    <h4>One on one</h4>
                     <div class="service-text">
 
-                        <p>The 4 months course is GHC800. You can start the course for free.</p>
+                        <p>The classes are one on one and tailored to give the student the full tutoring to make you a developer. We also have classes in groups of two</p>
                     </div>
                 </div>
             </div> <!-- /.col -->
@@ -466,7 +472,7 @@
                     </div>
                     <h4>Build your portfolio</h4>
                     <div class="service-text">
-                        <p>You can have your project hosted here and added to your portfolio </p><br>
+                        <p>We can help you build your portfolio to make you more marketable in the IT space </p><br>
                     </div>
                 </div>
             </div> <!-- /.col -->
@@ -477,6 +483,7 @@
 </section>
 
 <!-- Start Contact -->
+
 <section id="signup" class="p-top-80 p-bottom-50">
     <div class="container">
 
@@ -499,33 +506,13 @@
                 <div class="contact-form row">
 
                     <form name="ajax-form" id="ajax-form" action="contact.php" method="post">
-                        <div class="col-sm-6 contact-form-item wow zoomIn">
-                            <input name="name" id="name" type="text"   placeholder="Your Name: *"/>
-                            <span class="error" >please enter name</span>
-                        </div>
-                        <div class="col-sm-6 contact-form-item wow zoomIn">
-                            <input name="emailreg" id="emailreg" type="text"  placeholder="E-Mail: *"/>
-                            <span class="error" >please enter e-mail</span>
-                            <span class="error" >e-mail is not a valid format</span>
-                        </div>
-                        <div class="col-sm-6 contact-form-item wow zoomIn">
-                            <input name="name" id="phone" type="text"   placeholder="Phone Number: *"/>
-                            <span class="error" id="err-name">please enter name</span>
-                        </div>
-                        <div class="col-sm-6 contact-form-item wow zoomIn">
-                            <input name="name" id="passwordreg" type="password"   placeholder="Password: *"/>
-                            <span class="error" id="">please enter password</span>
-                        </div>
-                        <div id="regerrorlist" class="">
-
-
-                        </div>
 
 
                         <div class="col-sm-12 contact-form-item">
 
-                            <input type="button" id="submitreg" value="signup" class="send_message btn btn-main btn-theme wow fadeInUp">
-
+                            <a  class="send_message btn btn-main btn-theme wow fadeInUp">
+                                Reach us on whats app
+                            </a>
 
                         </div>
 
@@ -566,22 +553,11 @@
                             Download Learning materials
                         </div>
                         <div class="contact-info-text">
-                            Have access to learning materials to offline
+                            Have access to learning materials offline
                         </div>
                     </div>
 
-                    <!-- === Mail === -->
-                    <div class="m-top-20 wow slideInRight">
-                        <div class="contact-info-icon">
-                            <i class="fa fa-question"></i>
-                        </div>
-                        <div class="contact-info-title">
-                            Online Quiz
-                        </div>
-                        <div class="contact-info-text">
-                            Get access to our online quiz and assignments
-                        </div>
-                    </div>
+
 
                 </address>
             </div> <!-- /.col -->
@@ -592,6 +568,8 @@
     </div> <!-- /.container -->
 </section>
 <!-- End Contact -->
+
+
 <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
@@ -625,6 +603,7 @@
 
     </div>
 </div>
+
 
 <!-- Start Footer -->
 <footer class="site-footer">

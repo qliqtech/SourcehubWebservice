@@ -9,7 +9,8 @@ use App\Helpers\TimeHelper;
 use App\Models\Assignment;
 use App\Models\Assignment_students;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
+
+
 
 class AssignmentService extends BaseImplemetationService
 {
@@ -42,19 +43,11 @@ class AssignmentService extends BaseImplemetationService
 
             $params['activityname'] = "Assignment created";
 
-          //  $params['responsemessage'] = $ex->getMessage();
-
             $assignmentcreated = $assignmentDBOperations->create($params);
-
-
 
             $classid = $params['classid'];
 
-
-
             $listofstudentsinclass = $useroperations->listall()->where('classid','=',$classid);
-
-         //   dd($listofstudentsinclass);
 
             $this::matchassignmenttostudent($listofstudentsinclass->toArray(),$assignmentcreated->id);
 
@@ -63,10 +56,6 @@ class AssignmentService extends BaseImplemetationService
             );
 
             //send bulk email to class
-
-
-
-
 
         }catch (\Exception $ex){
 
@@ -110,7 +99,6 @@ class AssignmentService extends BaseImplemetationService
             //   dd($student);
 
             $assignmentdboperations->createstudentandassignment($student);
-
 
         }
 

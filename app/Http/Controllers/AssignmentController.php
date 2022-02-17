@@ -80,9 +80,6 @@ class AssignmentController extends Controller
     }
 
 
-
-
-
     public function markassignmentandcomment (Request $request) {
 
         $request->request->add($this->GetUserAgent($request));
@@ -163,8 +160,6 @@ class AssignmentController extends Controller
 
 
         $service = new AssignmentService();
-
-
 
 
         $response = $service->submitassignment($allkeys);
